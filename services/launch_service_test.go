@@ -16,19 +16,26 @@ import (
 // 	GetUpcoming(ctx context.Context) ([]models.Launch, error)
 // 	GetPast(ctx context.Context) ([]models.Launch, error)
 // }
+type MockSpaceXClient struct {
+	GetNextFunc     func(ctx context.Context) (*models.Launch, error)
+	GetLatestFunc   func(ctx context.Context) (*models.Launch, error)
+	GetUpcomingFunc func(ctx context.Context) ([]models.Launch, error)
+	GetPastFunc     func(ctx context.Context) ([]models.Launch, error)
+}
 
-type MockSpaceXClient struct{}
 func (m *MockSpaceXClient) GetNext(ctx context.Context) (*models.Launch, error) {
-	return nil, nil
-}
-func (m *MockSpaceXClient) GetLatest(ctx context.Context) (*models.Launch, error) {
-	return nil, nil
-}
-func (m *MockSpaceXClient) GetUpcoming(ctx context.Context) ([]models.Launch, error) {
-	return nil, nil
-}
-func (m *MockSpaceXClient) GetPast(ctx context.Context) ([]models.Launch, error) {
-	return nil, nil
+	return m.GetNextFunc(ctx)
 }
 
-var client = &MockSpaceXClient{}
+func (m *MockSpaceXClient) GetLatest(ctx context.Context) (*models.Launch, error) {
+	return m.GetLatestFunc(ctx)
+}
+
+func (m *MockSpaceXClient) GetUpcoming(ctx context.Context) ([]models.Launch, error) {
+	return m.GetUpcomingFunc(ctx)
+}
+
+func (m *MockSpaceXClient) GetPast(ctx context.Context) ([]models.Launch, error) {
+	return m.GetPastFunc(ctx)
+}
+

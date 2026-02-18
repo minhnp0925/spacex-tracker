@@ -54,7 +54,9 @@ func (h *LaunchHandler) GetUpcoming(c *gin.Context) {
 }
 
 func (h *LaunchHandler) GetPast(c *gin.Context) {
-	launches, err := h.service.GetPast(c.Request.Context())
+	sortOrder := c.DefaultQuery("sort", "desc")
+
+	launches, err := h.service.GetPast(c.Request.Context(), sortOrder)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "failed to fetch past launches",
