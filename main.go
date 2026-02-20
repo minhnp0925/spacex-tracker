@@ -1,14 +1,23 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"log"
 	"spacex-tracker/clients"
+	"spacex-tracker/configs"
 	"spacex-tracker/handlers"
 	"spacex-tracker/services"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	client := clients.NewSpaceXClient()
+	// Load configs
+	cfg, err := configs.Load()
+	if (err != nil) {
+		log.Fatal(err)
+	}
+
+	client := clients.NewSpaceXClient(cfg)
 	service := services.NewLaunchService(client)
 	handler := handlers.NewLaunchHandler(service)
 

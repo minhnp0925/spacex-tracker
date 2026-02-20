@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
+	"spacex-tracker/configs"
 	"spacex-tracker/models"
 )
 
@@ -19,18 +19,14 @@ type SpaceXClient interface {
 
 type concreteSpaceXClient struct {
 	base_url string
-	client *http.Client
+	client   *http.Client
 }
 
-// TODO: Move these to env/config
-var external_api_url string = "https://api.spacexdata.com/v5"
-var timeout time.Duration = 5 * time.Second
-
-func NewSpaceXClient() SpaceXClient {
+func NewSpaceXClient(cfg *configs.Config) SpaceXClient {
 	return &concreteSpaceXClient{
-		base_url: external_api_url,
+		base_url: cfg.ClientBaseURL,
 		client: &http.Client{
-			Timeout: timeout,
+			Timeout: cfg.ClientTimeout,
 		},
 	}
 }
