@@ -25,10 +25,9 @@ func getEnv(key, fallback string) string {
 }
 
 func Load() (*Config, error) {
-	// Load .env if present (ignore error in production)
-	_ = godotenv.Load()
+	_ = godotenv.Load() // safe for local, ignored in container
 
-	db, err := strconv.Atoi(getEnv("DATABASE", "0"))
+	db, err := strconv.Atoi(getEnv("REDIS_DB", "0"))
 	if err != nil {
 		return nil, err
 	}
@@ -39,8 +38,8 @@ func Load() (*Config, error) {
 	}
 
 	return &Config{
-		RedisAddress:  getEnv("ADDRESS", "localhost:6379"),
-		RedisPassword: getEnv("PASSWORD", ""),
+		RedisAddress:  getEnv("REDIS_ADDRESS", "localhost:6379"),
+		RedisPassword: getEnv("REDIS_PASSWORD", ""),
 		RedisDB:       db,
 		ClientBaseURL: getEnv("CLIENT_BASE_URL", "https://api.spacexdata.com/v4"),
 		ClientTimeout: timeout,

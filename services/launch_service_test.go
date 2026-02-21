@@ -50,7 +50,7 @@ func TestGetNext_Success(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	result, err := service.GetNext(context.Background())
 	if err != nil {
@@ -69,7 +69,7 @@ func TestGetNext_Error(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	_, err := service.GetNext(context.Background())
 	if err == nil {
@@ -89,7 +89,7 @@ func TestGetLatest_Success(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	result, err := service.GetLatest(context.Background())
 	if err != nil {
@@ -108,7 +108,7 @@ func TestGetLatest_Error(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	_, err := service.GetLatest(context.Background())
 	if err == nil {
@@ -128,7 +128,7 @@ func TestGetUpcoming_Success(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	result, err := service.GetUpcoming(context.Background())
 	if err != nil {
@@ -147,7 +147,7 @@ func TestGetUpcoming_Error(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	_, err := service.GetUpcoming(context.Background())
 	if err == nil {
@@ -170,7 +170,7 @@ func TestGetPast_SortDesc(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	result, err := service.GetPast(context.Background(), "desc")
 	if err != nil {
@@ -202,7 +202,7 @@ func TestGetPast_SortAsc(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	result, err := service.GetPast(context.Background(), "asc")
 	if err != nil {
@@ -226,7 +226,7 @@ func TestGetPast_Error(t *testing.T) {
 		},
 	}
 
-	service := NewLaunchService(mock)
+	service := NewLaunchService(mock, nil)
 
 	_, err := service.GetPast(context.Background(), "desc")
 	if err == nil {
