@@ -9,7 +9,7 @@ import (
 
 type Cache interface {
 	Get(ctx context.Context, key string) ([]byte, error)
-	Set(ctx context.Context, key string, value []byte, ttl int) error
+	Set(ctx context.Context, key string, value []byte, ttl time.Duration) error
 }
 
 type RedisCache struct {
@@ -27,6 +27,6 @@ func (r *RedisCache) Get(ctx context.Context, key string) ([]byte, error) {
 }
 
 
-func (r *RedisCache) Set(ctx context.Context, key string, value []byte, ttlSeconds int) error {
-	return r.client.Set(ctx, key, value, time.Duration(ttlSeconds)*time.Second).Err()
+func (r *RedisCache) Set(ctx context.Context, key string, value []byte, ttl time.Duration) error {
+	return r.client.Set(ctx, key, value, ttl).Err()
 }

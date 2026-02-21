@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"spacex-tracker/cache"
+	"spacex-tracker/services/cache"
 	"spacex-tracker/clients"
 	"spacex-tracker/configs"
 	"spacex-tracker/handlers"
@@ -31,7 +31,8 @@ func main() {
 	redisCache := cache.NewRedisCache(rdb)
 
 	client := clients.NewSpaceXClient(cfg)
-	service := services.NewLaunchService(client, redisCache)
+	base := services.NewBaseLaunchService(client)
+	service := services.NewCachedLaunchService(base, redisCache, cfg.CacheTTL)
 	handler := handlers.NewLaunchHandler(service)
 
 	r := gin.Default()

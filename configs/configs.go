@@ -15,6 +15,8 @@ type Config struct {
 
 	ClientBaseURL string
 	ClientTimeout time.Duration
+
+	CacheTTL time.Duration
 }
 
 func getEnv(key, fallback string) string {
@@ -37,11 +39,14 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
+	ttl, err := time.ParseDuration(getEnv("CACHE_TTL", "60s"))
+
 	return &Config{
 		RedisAddress:  getEnv("REDIS_ADDRESS", "localhost:6379"),
 		RedisPassword: getEnv("REDIS_PASSWORD", ""),
 		RedisDB:       db,
 		ClientBaseURL: getEnv("CLIENT_BASE_URL", "https://api.spacexdata.com/v4"),
 		ClientTimeout: timeout,
+		CacheTTL: ttl,
 	}, nil
 }
