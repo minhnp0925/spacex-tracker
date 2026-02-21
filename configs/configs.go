@@ -34,19 +34,22 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
-	timeout, err := time.ParseDuration(getEnv("CLIENT_TIMEOUT", "5s"))
+	timeout, err := strconv.Atoi(getEnv("CLIENT_TIMEOUT", "5"))
 	if err != nil {
 		return nil, err
 	}
 
-	ttl, err := time.ParseDuration(getEnv("CACHE_TTL", "60s"))
+	ttl, err := strconv.Atoi(getEnv("CACHE_TTL", "60"))
+	if err != nil {
+		return nil, err
+	}
 
 	return &Config{
 		RedisAddress:  getEnv("REDIS_ADDRESS", "localhost:6379"),
 		RedisPassword: getEnv("REDIS_PASSWORD", ""),
 		RedisDB:       db,
 		ClientBaseURL: getEnv("CLIENT_BASE_URL", "https://api.spacexdata.com/v4"),
-		ClientTimeout: timeout,
-		CacheTTL: ttl,
+		ClientTimeout: time.Duration(timeout)*time.Second,
+		CacheTTL: time.Duration(ttl)*time.Second,
 	}, nil
 }

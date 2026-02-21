@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -28,5 +29,6 @@ func (r *RedisCache) Get(ctx context.Context, key string) ([]byte, error) {
 
 
 func (r *RedisCache) Set(ctx context.Context, key string, value []byte, ttl time.Duration) error {
+	log.Println("ttl here is", ttl)
 	return r.client.Set(ctx, key, value, ttl).Err()
 }
