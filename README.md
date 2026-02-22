@@ -26,3 +26,6 @@ docker-compose up --build
 ```
 
 Service will start at http://localhost:8080
+
+## Deployment
+The service is currently deployed at https://spacex-tracker.onrender.com
