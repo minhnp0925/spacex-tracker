@@ -20,6 +20,9 @@ func NewCachedLaunchService(
 	cache cache.Cache,
 	ttl time.Duration,
 ) LaunchService {
+	if cache == nil {
+        panic("cache cannot be nil")
+    }
 	return &cachedLaunchService{
 		inner: inner,
 		cache: cache,
@@ -34,9 +37,6 @@ func getOrSet[T any](
     ttl time.Duration, 
     fetch func(context.Context) (T, error),
 ) (T, error) {
-	if (c==nil) {
-		return fetch(ctx)
-	}
     // Attempt to retrieve from cache
     if data, err := c.Get(ctx, key); err == nil {
         var result T
