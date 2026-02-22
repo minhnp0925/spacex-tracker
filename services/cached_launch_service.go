@@ -34,6 +34,9 @@ func getOrSet[T any](
     ttl time.Duration, 
     fetch func(context.Context) (T, error),
 ) (T, error) {
+	if (c==nil) {
+		return fetch(ctx)
+	}
     // Attempt to retrieve from cache
     if data, err := c.Get(ctx, key); err == nil {
         var result T
@@ -74,6 +77,6 @@ func (c *cachedLaunchService) GetPast(ctx context.Context, sortOrder string) ([]
 		sortOrder = "desc"
 	}
 	
-	key := "launch:upcoming"+sortOrder
+	key := "launch:past"+sortOrder
 	return getOrSet(ctx, c.cache, key, c.ttl, c.inner.GetUpcoming)
 }
