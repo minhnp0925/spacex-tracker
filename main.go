@@ -2,11 +2,12 @@ package main
 
 import (
 	"log"
-	"spacex-tracker/services/cache"
+	"net/http"
 	"spacex-tracker/clients"
 	"spacex-tracker/configs"
 	"spacex-tracker/handlers"
 	"spacex-tracker/services"
+	"spacex-tracker/services/cache"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -36,6 +37,12 @@ func main() {
 	handler := handlers.NewLaunchHandler(service)
 
 	r := gin.Default()
+
+	r.GET("/health", func (c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "ok",
+		})
+	})
 
 	v1 := r.Group("/api/v1")
 	{
