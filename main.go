@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"spacex-tracker/clients"
@@ -20,20 +21,35 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("Using Redis address:", cfg.RedisAddress)
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     cfg.RedisAddress,
-		Password: cfg.RedisPassword,
-		DB:       cfg.RedisDB,
-	})
-	// Ensure that the connection is properly closed gracefully
-	defer rdb.Close()
+	log.Println("Using Redis URL:", cfg.RedisURL)
+	
+	var rdb *redis.Client
+	opt, err := redis.ParseURL(cfg.RedisURL)
+	if err == nil {
+		candidate := redis.NewClient(opt)
 
-	redisCache := cache.NewRedisCache(rdb)
-
+		if err := candidate.Ping(context.Background()).Err(); err != nil {
+			log.Printf("Redis unreachable: %v. Running cacheless.", err)
+		} else {
+			rdb = candidate
+			defer rdb.Close()
+			log.Println("Redis connected successfully")
+		}
+	} else {
+		log.Println("Invalid Redis URL, running cacheless")
+	}
+	
 	client := clients.NewSpaceXClient(cfg)
 	base := services.NewBaseLaunchService(client)
-	service := services.NewCachedLaunchService(base, redisCache, cfg.CacheTTL)
+	var service services.LaunchService
+	
+	if rdb != nil {
+		redisCache := cache.NewRedisCache(rdb)
+		service = services.NewCachedLaunchService(base, redisCache, cfg.CacheTTL)
+	} else {
+		service = base
+	}
+
 	handler := handlers.NewLaunchHandler(service)
 
 	r := gin.Default()

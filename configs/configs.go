@@ -9,9 +9,7 @@ import (
 )
 
 type Config struct {
-	RedisAddress  string
-	RedisPassword string
-	RedisDB       int
+	RedisURL string
 
 	ClientBaseURL string
 	ClientTimeout time.Duration
@@ -29,11 +27,6 @@ func getEnv(key, fallback string) string {
 func Load() (*Config, error) {
 	_ = godotenv.Load() // safe for local, ignored in container
 
-	db, err := strconv.Atoi(getEnv("REDIS_DB", "0"))
-	if err != nil {
-		return nil, err
-	}
-
 	timeout, err := strconv.Atoi(getEnv("CLIENT_TIMEOUT", "5"))
 	if err != nil {
 		return nil, err
@@ -45,9 +38,7 @@ func Load() (*Config, error) {
 	}
 
 	return &Config{
-		RedisAddress:  getEnv("REDIS_ADDRESS", "localhost:6379"),
-		RedisPassword: getEnv("REDIS_PASSWORD", ""),
-		RedisDB:       db,
+		RedisURL: getEnv("REDIS_URL", ""),
 		ClientBaseURL: getEnv("CLIENT_BASE_URL", "https://api.spacexdata.com/v4"),
 		ClientTimeout: time.Duration(timeout)*time.Second,
 		CacheTTL: time.Duration(ttl)*time.Second,
